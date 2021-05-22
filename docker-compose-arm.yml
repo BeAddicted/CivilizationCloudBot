@@ -12,10 +12,12 @@ services:
      - CivCloudBot_MongoDB_host=mongo
      #all other configuration variables defined in the configuration.yaml 
      #can also be overwritten here by adding more environment variables
+    restart: always
     links:
      - mongo:mongo
   mongo:
     image: ivanmarban/armhf-mongodb
+    restart: always
     volumes:
      - ./mongodata:/var/lib/mongodb
     ports:
