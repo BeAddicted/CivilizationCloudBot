@@ -1,8 +1,5 @@
 CivCloudBot:
     logLevel: 20 #20 = logLevel INFO, use 10 for DEBUG
-    MongoDB:
-        host: localhost
-        port: 27017
     #replace the base url with the URL of your host
     BaseURL: http://example.org
     
@@ -13,6 +10,6 @@ CivCloudBot:
     Bots:
         Telegram:
             #add your Telegram Bot Api Key here
-            ApiKey: changeit!
+            ApiKey: changeit
           
     

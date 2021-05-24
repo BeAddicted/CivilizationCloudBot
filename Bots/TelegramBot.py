@@ -15,12 +15,6 @@ class TelegramBot:
 		dispatcher = self.updater.dispatcher
 		start_handler = CommandHandler('start', self.start)
 		dispatcher.add_handler(start_handler)
-		stop_handler = CommandHandler('stop', self.stop)
-		dispatcher.add_handler(stop_handler)
-		info_handler = CommandHandler('info', self.info)
-		dispatcher.add_handler(info_handler)
-		help_handler = CommandHandler('help', self.help)
-		dispatcher.add_handler(help_handler)
 		print("Telegram Bot started")
 		print(self.updater.bot.get_me())
 	
@@ -44,14 +38,5 @@ class TelegramBot:
 
 	def start(self, update, context):
 		context.bot.send_message(chat_id=update.effective_chat.id, text=self.handler.start(self.type, update.effective_chat.id))
-	
-	def stop(self, update, context):
-		context.bot.send_message(chat_id=update.effective_chat.id, text=self.handler.stop(self.type, update.effective_chat.id))
-	
-	def info(self, update, context):
-		context.bot.send_message(chat_id=update.effective_chat.id, text=self.handler.info(self.type, update.effective_chat.id))
-		
-	def help(self, update, context):
-		context.bot.send_message(chat_id=update.effective_chat.id, text=self.handler.help())
 	
 	

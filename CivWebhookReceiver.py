@@ -26,24 +26,24 @@ class CivWebhookReceiver:
 		Address to listen on. Empty string to listen on all addresses.
 	port : int
 		Port to listen on.
-	civMonogClient: CivMongoClient
-		The MongoClient to use for Database access.
+	urlHandler: CivUrlHandler
+		The UrlHandler to get create a path for the Notification.
 	botMap:
 		Map of all bots containing BotType as key and the actual BotObject as value.
 	"""
 	
-	def __init__(self, address, port, civMongoClient, botMap):
+	def __init__(self, address, port, urlHandler, botMap):
 		self.address = address
 		self.port = port
-		self.client = civMongoClient
+		self.urlHandler = urlHandler
 		self.botMap = botMap
 
 	def generate_Handler(self):
 		"""
 		Generate the Handler Class for incoming requests. 
-		Must be done here to define client and botMap in this function, so the Class (and with it all created Objects created by the HTTPServer) has access to those.
+		Must be done here to define urlHandler and botMap in this function, so the Class (and with it all created Objects created by the HTTPServer) has access to those.
 		"""		
-		client = self.client
+		urlHandler = self.urlHandler
 		botMap = self.botMap
 		
 		class CivWebhookHandler(BaseHTTPRequestHandler):
@@ -62,19 +62,22 @@ class CivWebhookReceiver:
 					text =  NotificationText.format(name = payload["value2"], turn = payload["value3"], game = payload["value1"])
 					
 					#get notifications for called path
-					notifications = client.getNotificationsForPath(self.path.replace("/",""))
+					notifications = urlHandler.getNotificationsForPath(self.path.replace("/",""))
 					
 					#send text to all bots defined by notifications.
 					#Note most of the time there will only be one but there could be multiple if someone wants multiple channels to be called.
 					if notifications:
 						for notification in notifications:
 							botMap[notification["type"]].notify(text, notification["userid"])
+						self.send_response(200)
+						self.end_headers()
 					else:
 						logging.info("Nothing to notify for path {path}".format(path = self.path))
+						self.send_response(404)
+						self.end_headers()
 
 					
-					self.send_response(200)
-					self.end_headers()
+
 				except JSONDecodeError as e:
 					traceback.print_exc()
 					logging.error(e.msg)
@@ -84,6 +87,11 @@ class CivWebhookReceiver:
 					traceback.print_exc()
 					logging.error(str(e))
 					self.send_response(400)
+					self.end_headers()
+				except:
+					traceback.print_exc()
+					logging.error(str(e))
+					self.send_response(500)
 					self.end_headers()
 		return CivWebhookHandler
 		

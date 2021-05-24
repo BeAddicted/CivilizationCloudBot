@@ -6,6 +6,6 @@ ADD configuration.yml /CIVBot/
 
 WORKDIR /CIVBot
 
-RUN pip install pyyaml python-telegram-bot pymongo
+RUN pip install pyyaml python-telegram-bot
 
 CMD python start.py
