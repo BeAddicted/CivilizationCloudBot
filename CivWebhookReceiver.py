@@ -11,7 +11,7 @@ class CivWebhookReceiver:
 	"""
 	Responsible for receiving Civilization 6 Webhooks and handling them.
 	
-	Not the strange DataModle Civilization 6 gives out:
+	Note the strange DataModel Civilization 6 gives out:
 	{
 	"value1": "the name of your game",
 	"value2": "the player's Steam name",
